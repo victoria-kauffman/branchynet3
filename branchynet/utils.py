@@ -47,8 +47,8 @@ def test_augment(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         x=branchyNet.xp.asarray(x,dtype=branchyNet.xp.float32)
         t=branchyNet.xp.asarray(t,dtype=branchyNet.xp.int32)
                 
-        x = Variable(x, volatile=True)
-        t = Variable(t, volatile=True)
+        x = Variable(x)
+        t = Variable(t)
 
         # start_time = time.time()
         if main:
@@ -88,8 +88,8 @@ def test(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         input_data = branchyNet.xp.asarray(input_data, dtype=branchyNet.xp.float32)
         label_data = branchyNet.xp.asarray(label_data, dtype=branchyNet.xp.int32)
 
-        x = Variable(input_data, volatile=True)
-        t = Variable(label_data, volatile=True)
+        x = Variable(input_data)
+        t = Variable(label_data)
         if main:
             acc, diff = branchyNet.test_main(x,t)
             #if hasattr(h.data,'get'):
@@ -117,8 +117,8 @@ def test(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         if num_exits[i] > 0:
             accbreakdowns[i]/=num_exits[i]
     #if len(finals) > 0:
-    #    hh = Variable(np.vstack(finals),volatile=True)
-    #    tt = Variable(y_test, volatile=True)
+    #    hh = Variable(np.vstack(finals))
+    #    tt = Variable(y_test)
     #    overall = F.accuracy(hh,tt).data
     
     return overall, totaltime, num_exits, accbreakdowns
@@ -130,7 +130,7 @@ def get_SM(branchyNet, x_test, batchsize=10000):
     for i in range(0, datasize, batchsize):
         input_data = x_test[i : i + batchsize]
         input_data = branchyNet.xp.asarray(input_data, dtype=branchyNet.xp.float32)
-        x = Variable(input_data, volatile=True)
+        x = Variable(input_data)
         exitHs.extend(branchyNet.get_SM(x))
 
     return exitHs
@@ -230,7 +230,6 @@ def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
         avgaccuracies = []
         # avgnumsamples = []
         # avgexitsamples = []
-
         for i in range(0, datasize, batchsize):
             input_data = x_train[indexes[i : i + batchsize]]
             label_data = y_train[indexes[i : i + batchsize]]

@@ -4,7 +4,7 @@ import ssl
 
 def get_data():
     ssl._create_default_https_context = ssl._create_unverified_context
-    mnist = fetch_openml(name='mnist_784', version=1)
+    mnist = fetch_openml(name='mnist_784', version=1, as_frame=False)
     x_all = mnist['data'].astype(np.float32) / 255
     y_all = mnist['target'].astype(np.int32)
     x_train, x_test = np.split(x_all, [60000])

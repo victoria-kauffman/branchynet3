@@ -62,7 +62,7 @@ class ResBlock(chainer.Chain):
             n, c, hh, ww = x.data.shape
             pad_c = h.data.shape[1] - c
             p = xp.zeros((n, pad_c, hh, ww), dtype=xp.float32)
-            p = chainer.Variable(p, volatile=not train)
+            p = chainer.Variable(p)
             x = F.concat((p, x))
             if x.data.shape[2:] != h.data.shape[2:]:
                 x = F.average_pooling_2d(x, 1, 2)

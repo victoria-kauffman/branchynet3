@@ -14,7 +14,9 @@ from networks import lenet_mnist
 
 branchyNet = lenet_mnist.get_network()
 if cuda.available:
+    print("to gpu")
     branchyNet.to_gpu()
+
 branchyNet.training()
 
 
@@ -42,9 +44,9 @@ print("Training main network")
 main_loss, main_acc, main_time = utils.train(branchyNet, x_train, y_train, main=True, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
 
-print(main_loss)
-print(main_acc)
-print(main_time)
+print("Main loss: ", main_loss)
+print("Main acc: ", main_acc)
+print("Main time: ", main_time)
 # Train BranchyNet
 
 # In[7]:
@@ -53,13 +55,13 @@ print("Training branchynet network")
 TRAIN_NUM_EPOCHS = 100
 branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
-print(branch_loss)
-print(branch_acc)
-print(branch_time)
+print("Branch loss: ", branch_loss)
+print("Branch acc: ", branch_acc)
+print("Branch time: ", branch_time)
 
 import dill
 branchyNet.to_cpu()
-with open("_models/lenet_mnist.bn", "w") as f:
+with open("_models/lenet_mnist.bn", "wb") as f:
     dill.dump(branchyNet, f)
 
 #set network to inference mode
@@ -100,8 +102,8 @@ print("utils test")
 g_baseacc, g_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
 g_basediff = (g_basediff / float(len(y_test))) * 1000.
 
-print(g_baseacc)
-print(g_basediff)
+print("g_baseacc: ", g_baseacc)
+print("g_basediff: ", g_basediff)
 
 print("utils test 2")
 
@@ -109,8 +111,8 @@ print("utils test 2")
 c_baseacc, c_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
 c_basediff = (c_basediff / float(len(y_test))) * 1000.
 
-print(c_baseacc)
-print(c_basediff)
+print("c base acc: ", c_baseacc)
+print("c base diff: ", c_basediff)
 
 # In[30]:
 
@@ -129,10 +131,10 @@ g_ts, g_accs, g_diffs, g_exits = utils.screen_branchy(branchyNet, x_test, y_test
 # g_ts, g_accs, g_diffs, g_exits = utils.screen_leaky(leakyNet, x_test, y_test, thresholds, inc_amt=-0.1,
 #                                                     batchsize=TEST_BATCHSIZE, verbose=True)
 
-print(g_ts)
-print(g_accs)
-print(g_diffs)
-print(g_exits)
+print("g_ts: ", g_ts)
+print("g_accs: ", g_accs)
+print("g_diffs: ", g_diffs)
+print("g_exits: ", g_exits)
 #convert to ms
 g_diffs *= 1000.
 
@@ -156,13 +158,26 @@ c_diffs *= 1000.
 # In[22]:
 print("plot again")
 
-print(c_accs)
-print(c_diffs)
-print(c_ts)
-print(c_exits)
-print(c_baseacc)
-print(c_basediff)
+print("c_accs: ", c_accs)
+print("c_diffs: ", c_diffs)
+print("c_ts: ", c_ts)
+print("c_exits: ", c_exits)
+print("c_baseacc: ", c_baseacc)
+print("c_basediff: ", c_basediff)
 
+# Save model/data
+
+# In[40]:
+print("dill dump")
+
+import dill
+branchyNet.to_cpu()
+with open("_models/lenet_mnist.bn", "wb") as f:
+    dill.dump(branchyNet, f)
+with open("_models/lenet_mnist_gpu_results.pkl", "w") as f:
+    dill.dump({'accs': g_accs, 'rt': g_diffs, 'exits': g_exits, 'ts': g_ts, 'baseacc': g_baseacc, 'basediff': g_basediff}, f)
+with open("_models/lenet_mnist_cpu_results.pkl", "w") as f:
+    dill.dump({'accs': c_accs, 'rt': c_diffs, 'exits': c_exits, 'ts': c_ts, 'baseacc': c_baseacc, 'basediff': c_basediff}, f)
 
 visualize.plot_line_tradeoff(g_accs, g_diffs, g_ts, g_exits, g_baseacc, g_basediff, all_samples=False, inc_amt=-0.0001000,
                              our_label='BranchyLeNet', orig_label='LeNet', xlabel='Runtime (ms)', 
@@ -184,17 +199,4 @@ utils.branchy_table_results(c_baseacc, c_basediff, g_basediff, c_accs, c_diffs, 
                           network='LeNet')
 
 
-# Save model/data
-
-# In[40]:
-print("dill dump")
-
-import dill
-branchyNet.to_cpu()
-with open("_models/lenet_mnist.bn", "w") as f:
-    dill.dump(branchyNet, f)
-with open("_models/lenet_mnist_gpu_results.pkl", "w") as f:
-    dill.dump({'accs': g_accs, 'rt': g_diffs, 'exits': g_exits, 'ts': g_ts, 'baseacc': g_baseacc, 'basediff': g_basediff}, f)
-with open("_models/lenet_mnist_cpu_results.pkl", "w") as f:
-    dill.dump({'accs': c_accs, 'rt': c_diffs, 'exits': c_exits, 'ts': c_ts, 'baseacc': c_baseacc, 'basediff': c_basediff}, f)
 

@@ -142,7 +142,7 @@ def plot_layer_entropy(leakyNet, x):
     
     leakyNet.to_cpu()
     x = leakyNet.xp.asarray(x, dtype=leakyNet.xp.float32)
-    h = Variable(x, volatile=True)
+    h = Variable(x)
     ents = []
     for model in leakyNet.models:
         h = model.test(h,model.starti,model.endi)
