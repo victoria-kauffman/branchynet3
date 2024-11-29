@@ -12,10 +12,12 @@ from chainer import cuda
 
 from networks import lenet_mnist
 
+print("Get network")
 branchyNet = lenet_mnist.get_network()
 if cuda.available:
     print("to gpu")
     branchyNet.to_gpu()
+print("Training")
 
 branchyNet.training()
 
@@ -23,6 +25,8 @@ branchyNet.training()
 # Import Data
 
 # In[4]:
+
+print("Get data")
 
 from datasets import mnist
 x_train, y_train, x_test, y_test = mnist.get_data()
@@ -107,17 +111,17 @@ print("g_basediff: ", g_basediff)
 
 print("utils test 2")
 
-#branchyNet.to_cpu()
-c_baseacc, c_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
-c_basediff = (c_basediff / float(len(y_test))) * 1000.
+# #branchyNet.to_cpu()
+# c_baseacc, c_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
+# c_basediff = (c_basediff / float(len(y_test))) * 1000.
 
-print("c base acc: ", c_baseacc)
-print("c base diff: ", c_basediff)
+# print("c base acc: ", c_baseacc)
+# print("c base diff: ", c_basediff)
 
-# In[30]:
+# # In[30]:
 
-# Specify thresholds
-thresholds = [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1., 2., 3., 5., 10.]
+# # Specify thresholds
+# thresholds = [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1., 2., 3., 5., 10.]
 
 
 # In[20]:
@@ -143,27 +147,27 @@ print("plot shit")
 # In[ ]:
 
 # In[32]:
-print("screen branchy 2")
+# print("screen branchy 2")
 
-#CPU
-branchyNet.to_cpu()
-c_ts, c_accs, c_diffs, c_exits  = utils.screen_branchy(branchyNet, x_test, y_test, thresholds,
-                                                     batchsize=TEST_BATCHSIZE, verbose=True)
-# c_ts, c_accs, c_diffs, c_exits  = utils.screen_branchy(branchyNet, x_test, y_test, g_ts, inc_amt=0.01,
-#                                                      batchsize=TEST_BATCHSIZE, prescreen=False, verbose=True)
-#convert to ms
-c_diffs *= 1000.
+# #CPU
+# branchyNet.to_cpu()
+# c_ts, c_accs, c_diffs, c_exits  = utils.screen_branchy(branchyNet, x_test, y_test, thresholds,
+#                                                      batchsize=TEST_BATCHSIZE, verbose=True)
+# # c_ts, c_accs, c_diffs, c_exits  = utils.screen_branchy(branchyNet, x_test, y_test, g_ts, inc_amt=0.01,
+# #                                                      batchsize=TEST_BATCHSIZE, prescreen=False, verbose=True)
+# #convert to ms
+# c_diffs *= 1000.
 
 
-# In[22]:
-print("plot again")
+# # In[22]:
+# print("plot again")
 
-print("c_accs: ", c_accs)
-print("c_diffs: ", c_diffs)
-print("c_ts: ", c_ts)
-print("c_exits: ", c_exits)
-print("c_baseacc: ", c_baseacc)
-print("c_basediff: ", c_basediff)
+# print("c_accs: ", c_accs)
+# print("c_diffs: ", c_diffs)
+# print("c_ts: ", c_ts)
+# print("c_exits: ", c_exits)
+# print("c_baseacc: ", c_baseacc)
+# print("c_basediff: ", c_basediff)
 
 # Save model/data
 
@@ -176,8 +180,8 @@ with open("_models/lenet_mnist.bn", "wb") as f:
     dill.dump(branchyNet, f)
 with open("_models/lenet_mnist_gpu_results.pkl", "w") as f:
     dill.dump({'accs': g_accs, 'rt': g_diffs, 'exits': g_exits, 'ts': g_ts, 'baseacc': g_baseacc, 'basediff': g_basediff}, f)
-with open("_models/lenet_mnist_cpu_results.pkl", "w") as f:
-    dill.dump({'accs': c_accs, 'rt': c_diffs, 'exits': c_exits, 'ts': c_ts, 'baseacc': c_baseacc, 'basediff': c_basediff}, f)
+# with open("_models/lenet_mnist_cpu_results.pkl", "w") as f:
+#     dill.dump({'accs': c_accs, 'rt': c_diffs, 'exits': c_exits, 'ts': c_ts, 'baseacc': c_baseacc, 'basediff': c_basediff}, f)
 
 visualize.plot_line_tradeoff(g_accs, g_diffs, g_ts, g_exits, g_baseacc, g_basediff, all_samples=False, inc_amt=-0.0001000,
                              our_label='BranchyLeNet', orig_label='LeNet', xlabel='Runtime (ms)', 

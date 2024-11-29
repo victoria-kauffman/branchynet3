@@ -82,16 +82,17 @@ class SL(Link):
         fnTest = copy.deepcopy(self.fnTest,memo)
         new = type(self)(fnTrain,fnTest)
         return new
-    def to_gpu(self):
-        if self.fnTrain is not None:
-            self.fnTrain.to_gpu()
-        if self.fnTest is not None:
-            self.fnTest.to_gpu()
-    def to_cpu(self):
-        if self.fnTrain is not None:
-            self.fnTrain.to_cpu()
-        if self.fnTest is not None:
-            self.fnTest.to_cpu()
+    # def to_gpu(self):
+    #     print("Here????")
+    #     if self.fnTrain is not None:
+    #         self.fnTrain.to_gpu()
+    #     if self.fnTest is not None:
+    #         self.fnTest.to_gpu()
+    # def to_cpu(self):
+    #     if self.fnTrain is not None:
+    #         self.fnTrain.to_cpu()
+    #     if self.fnTest is not None:
+    #         self.fnTest.to_cpu()
     def __call__(self, x, test=False):
         if not test:
             return self.fnTrain(x,test)

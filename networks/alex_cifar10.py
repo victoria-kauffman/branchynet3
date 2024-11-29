@@ -34,10 +34,10 @@ def gen_2b(branch1, branch2):
         FL(F.max_pooling_2d, 3, 2),
         L.Linear(1024, 256),
         FL(F.relu),
-        SL(FL(F.dropout,0.5,train=True)),
+        SL(FL(F.dropout,0.5)),
         L.Linear(256, 128),
         FL(F.relu),
-        SL(FL(F.dropout,0.5,train=True)),
+        SL(FL(F.dropout,0.5)),
         Branch([L.Linear(128, 10)])
     ]
     
@@ -46,11 +46,6 @@ def gen_2b(branch1, branch2):
 def get_network(percentTrainKeeps=1):
     network = gen_2b(branch1=norm() + conv(64) + conv(32) + cap(512),
                               branch2=norm() + conv(96) + cap(128))
-    # Adding a new branch after the first two layers
-    network.insert(3, Branch([L.Convolution2D(32, 64, 3, pad=1), L.Linear(4096, 10)]))
-
-    # Adding another branch after the third convolution layer
-    network.insert(7, Branch([L.Convolution2D(64, 96, 3, pad=1), L.Linear(2048, 10)]))
 
     net = BranchyNet(network, percentTrainKeeps=percentTrainKeeps)
     return net

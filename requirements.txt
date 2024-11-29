@@ -27,3 +27,4 @@ six==1.16.0
 virtualenv==20.24.1
 zipp==3.16.2
 pandas==1.2.5
+cupy-cuda102==7.8.0
