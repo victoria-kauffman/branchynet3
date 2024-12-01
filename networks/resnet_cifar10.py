@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 from branchynet.links.links import *
 from branchynet.links import resnet
@@ -34,6 +34,12 @@ def get_network(percentTrainKeeps=1):
         network += [resnet.ResBlock(16, 16)]
 
     network += [Branch([resnet.ResBlock(16, 16), L.Linear(14400, 10)])]
+
+    # Adding a branch at a deeper point in the network
+    network += [Branch([resnet.ResBlock(32, 32), L.Linear(7200, 10)])]
+
+    # Final branch at a later stage, before average pooling
+    network += [Branch([resnet.ResBlock(64, 64), L.Linear(3600, 10)])]
 
     for i in range(n):
         network += [resnet.ResBlock(32 if i > 0 else 16, 32,

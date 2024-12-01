@@ -50,7 +50,7 @@ class X(chainer.ChainList):
     def __call__(self, x, test):
         h = x
         for link in self:
-            if len(inspect.getargspec(link.__call__)[0]) == 2:
+            if len(inspect.signature(link.__call__).parameters) == 2:
                 h = link(h)
             else:
                 h = link(h,test)
@@ -59,7 +59,7 @@ class X(chainer.ChainList):
             n, c, hh, ww = x.data.shape
             pad_c = h.data.shape[1] - c
             p = xp.zeros((n, pad_c, hh, ww), dtype=xp.float32)
-            p = chainer.Variable(p, volatile=test)
+            p = chainer.Variable(p)
             x = F.concat((p, x))
             if x.data.shape[2:] != h.data.shape[2:]:
                 x = F.average_pooling_2d(x, 1, 2)
@@ -82,16 +82,17 @@ class SL(Link):
         fnTest = copy.deepcopy(self.fnTest,memo)
         new = type(self)(fnTrain,fnTest)
         return new
-    def to_gpu(self):
-        if self.fnTrain is not None:
-            self.fnTrain.to_gpu()
-        if self.fnTest is not None:
-            self.fnTest.to_gpu()
-    def to_cpu(self):
-        if self.fnTrain is not None:
-            self.fnTrain.to_cpu()
-        if self.fnTest is not None:
-            self.fnTest.to_cpu()
+    # def to_gpu(self):
+    #     print("Here????")
+    #     if self.fnTrain is not None:
+    #         self.fnTrain.to_gpu()
+    #     if self.fnTest is not None:
+    #         self.fnTest.to_gpu()
+    # def to_cpu(self):
+    #     if self.fnTrain is not None:
+    #         self.fnTrain.to_cpu()
+    #     if self.fnTest is not None:
+    #         self.fnTest.to_cpu()
     def __call__(self, x, test=False):
         if not test:
             return self.fnTrain(x,test)
@@ -120,7 +121,7 @@ class Net(ChainList):
     def __call__(self, x, test=False, starti=0, endi=None):
         h = x
         for link in self[starti:endi]:
-            if len(inspect.getargspec(link.__call__)[0]) == 2:
+            if len(inspect.signature(link.__call__).parameters) == 2:
                 h = link(h)
             else:
                 h = link(h,test)
@@ -161,7 +162,7 @@ class Branch(ChainList):
     def __call__(self, x, test=False):
         h = x
         for link in self[starti:endi]:
-            if len(inspect.getargspec(link.__call__)[0]) == 2:
+            if len(inspect.signature(link.__call__).parameters) == 2:
                 h = link(h)
             else:
                 h = link(h,test)

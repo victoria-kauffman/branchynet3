@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
-import utils
+from . import utils
 
 from chainer import Variable
 import chainer.functions as F
@@ -93,14 +93,7 @@ def plot_roc(ps,accs,diffs,baseacc,basediff):
 def plot_line_tradeoff(accs, diffs, ps, exits, baseacc, basediff, orig_label='Baseline', title=None, our_label='Our Method',
                        xlabel='Runtime (s)', ylabel='Classification Accuracy', all_samples=False, knee_idx=None,
                        xlim=None, ylim=None, inc_amt=-0.0005, output_path=None):
-    matplotlib.rcParams.update({'axes.labelsize': 10,
-    'text.fontsize': 18,
-    'legend.fontsize': 15,
-    'xtick.labelsize': 13,
-    'ytick.labelsize': 13,
-    'axes.labelsize': 18,
-    'text.usetex': False,
-    'figure.figsize': [4.5, 3.5]})
+    matplotlib.rcParams.update({'axes.labelsize': 10})
 
     matplotlib.rcParams['legend.numpoints'] = 1
     matplotlib.rcParams['pdf.fonttype'] = 42
@@ -149,7 +142,7 @@ def plot_layer_entropy(leakyNet, x):
     
     leakyNet.to_cpu()
     x = leakyNet.xp.asarray(x, dtype=leakyNet.xp.float32)
-    h = Variable(x, volatile=True)
+    h = Variable(x)
     ents = []
     for model in leakyNet.models:
         h = model.test(h,model.starti,model.endi)

@@ -53,16 +53,17 @@ class ResBlock(chainer.Chain):
     def __deepcopy__(self, memo):
         new = type(self)(self.in_size, self.out_size, self.stride, self.ksize)
         return new
-    def __call__(self, x, test):
+    def __call__(self, x, test=False):
         train = not test
-        h = F.relu(self.bn1(self.conv1(x), test=not train))
-        h = self.bn2(self.conv2(h), test=not train)
+        with chainer.using_config('train', train):
+            h = F.relu(self.bn1(self.conv1(x)))
+            h = self.bn2(self.conv2(h))
         if x.data.shape != h.data.shape:
             xp = chainer.cuda.get_array_module(x.data)
             n, c, hh, ww = x.data.shape
             pad_c = h.data.shape[1] - c
             p = xp.zeros((n, pad_c, hh, ww), dtype=xp.float32)
-            p = chainer.Variable(p, volatile=not train)
+            p = chainer.Variable(p)
             x = F.concat((p, x))
             if x.data.shape[2:] != h.data.shape[2:]:
                 x = F.average_pooling_2d(x, 1, 2)

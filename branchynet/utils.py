@@ -3,7 +3,7 @@ import numpy as np
 import time
 from itertools import product
 import chainer.functions as F
-from augment import augmentation
+from .augment import augmentation
 
 def test_suite_A(branchyNet,x_test,y_test,batchsize=10000,ps=np.linspace(0.1,1.0,10)):
     accs = []
@@ -47,8 +47,8 @@ def test_augment(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         x=branchyNet.xp.asarray(x,dtype=branchyNet.xp.float32)
         t=branchyNet.xp.asarray(t,dtype=branchyNet.xp.int32)
                 
-        x = Variable(x, volatile=True)
-        t = Variable(t, volatile=True)
+        x = Variable(x)
+        t = Variable(t)
 
         # start_time = time.time()
         if main:
@@ -58,7 +58,7 @@ def test_augment(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         
         totaltime += branchyNet.runtime
         
-        print "pred.shape",pred.shape
+        print("pred.shape",pred.shape)
         pred = pred.mean(axis=0)
         acc = int(pred.argmax() == t.data[0])
         sum_accuracy += acc
@@ -88,8 +88,8 @@ def test(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         input_data = branchyNet.xp.asarray(input_data, dtype=branchyNet.xp.float32)
         label_data = branchyNet.xp.asarray(label_data, dtype=branchyNet.xp.int32)
 
-        x = Variable(input_data, volatile=True)
-        t = Variable(label_data, volatile=True)
+        x = Variable(input_data)
+        t = Variable(label_data)
         if main:
             acc, diff = branchyNet.test_main(x,t)
             #if hasattr(h.data,'get'):
@@ -117,8 +117,8 @@ def test(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
         if num_exits[i] > 0:
             accbreakdowns[i]/=num_exits[i]
     #if len(finals) > 0:
-    #    hh = Variable(np.vstack(finals),volatile=True)
-    #    tt = Variable(y_test, volatile=True)
+    #    hh = Variable(np.vstack(finals))
+    #    tt = Variable(y_test)
     #    overall = F.accuracy(hh,tt).data
     
     return overall, totaltime, num_exits, accbreakdowns
@@ -130,7 +130,7 @@ def get_SM(branchyNet, x_test, batchsize=10000):
     for i in range(0, datasize, batchsize):
         input_data = x_test[i : i + batchsize]
         input_data = branchyNet.xp.asarray(input_data, dtype=branchyNet.xp.float32)
-        x = Variable(input_data, volatile=True)
+        x = Variable(input_data)
         exitHs.extend(branchyNet.get_SM(x))
 
     return exitHs
@@ -140,11 +140,11 @@ def traintest_augment(branchyNet,x_train,y_train,x_test,y_test,batchsize=10000,n
     for i in range(num_epoch):
         branchyNet.training()
         plotlosses,plotaccuracies,totaltime = train_augment(branchyNet,x_train,y_train,batchsize=batchsize,num_epoch=1,main=main)
-        print("train losses", plotlosses)
-        print("train accuracy", plotaccuracies)
+        print(("train losses", plotlosses))
+        print(("train accuracy", plotaccuracies))
         branchyNet.testing()
         overall, totaltime, num_exits = test_augment(branchyNet,x_test,y_test,batchsize=batchsize,main=main)
-        print("test accuracy", overall)
+        print(("test accuracy", overall))
 
     return plotlosses,plotaccuracies,totaltime
 
@@ -159,8 +159,8 @@ def traintest(branchyNet,x_train,y_train,x_test,y_test,batchsize=10000,num_epoch
         branchyNet.training()
         tr_loss, tr_acc, rt = train(branchyNet,x_train,y_train,batchsize=batchsize,num_epoch=1,main=main)
         if verbose:
-            print("train losses", tr_loss[0])
-            print("train accuracy", tr_acc[0])
+            print(("train losses", tr_loss[0]))
+            print(("train accuracy", tr_acc[0]))
         total_time += rt
         losses.append(tr_loss[0])
         accs.append(tr_acc[0])
@@ -168,9 +168,9 @@ def traintest(branchyNet,x_train,y_train,x_test,y_test,batchsize=10000,num_epoch
         branchyNet.testing()
         t_acc, t_time, t_exits, t_accbreakdowns = test(branchyNet,x_test,y_test,batchsize=batchsize,main=main)
         if verbose:
-            print("test accuracy", t_accbreakdowns)
-            print("test exits", t_exits)
-            print("test accuracy overall", t_acc)
+            print(("test accuracy", t_accbreakdowns))
+            print(("test exits", t_exits))
+            print(("test accuracy overall", t_acc))
         test_totaltime += t_time
         test_overall.append(t_acc)
         test_num_exits.append(t_exits)
@@ -181,7 +181,7 @@ def traintest(branchyNet,x_train,y_train,x_test,y_test,batchsize=10000,num_epoch
 def train_augment(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
     datasize = x_train.shape[0]
     
-    plotepochs = range(num_epoch)
+    plotepochs = list(range(num_epoch))
     plotlosses = []
     plotaccuracies = []
     # plotnumsamples = []
@@ -213,7 +213,7 @@ def train_augment(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=F
 def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
     datasize = x_train.shape[0]
     
-    plotepochs = range(num_epoch)
+    plotepochs = list(range(num_epoch))
     plotlosses = []
     plotaccuracies = []
     # plotnumsamples = []
@@ -230,7 +230,6 @@ def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
         avgaccuracies = []
         # avgnumsamples = []
         # avgexitsamples = []
-
         for i in range(0, datasize, batchsize):
             input_data = x_train[indexes[i : i + batchsize]]
             label_data = y_train[indexes[i : i + batchsize]]
@@ -309,13 +308,13 @@ def screen_branchy(branchyNet, x_test, y_test, base_ts, batchsize=1, enumerate_t
 def branchy_table_results(network, baseacc, basediff, accs, diffs, exits, ts):
     print_lst = lambda xs: '{' + ', '.join(map(str, xs)) + '}'
 
-    print '{:>15}{:>15}{:>15}{:>15}{:>15}{:>15}'.format('Network', 'Acc.(%)', 'Time(ms)', 'Gain', 'Thrshld.T', 'Exit(%)')
-    print '{:>15}{:>15.2f}{:>15.2f}{:>15}{:>15}{:>15}'.format(network, baseacc*100., basediff, '-', '-', '-')
+    print('{:>15}{:>15}{:>15}{:>15}{:>15}{:>15}'.format('Network', 'Acc.(%)', 'Time(ms)', 'Gain', 'Thrshld.T', 'Exit(%)'))
+    print('{:>15}{:>15.2f}{:>15.2f}{:>15}{:>15}{:>15}'.format(network, baseacc*100., basediff, '-', '-', '-'))
     
     for i, (acc, diff, exit, t) in enumerate(zip(accs, diffs, exits, ts)):
-        print '{:>15}{:>15.2f}{:>15.2f}{:>15.2f}{:>15}{:>15}'.format('B-'+network, acc*100., diff, basediff / diff, 
+        print('{:>15}{:>15.2f}{:>15.2f}{:>15.2f}{:>15}{:>15}'.format('B-'+network, acc*100., diff, basediff / diff, 
                                                                      print_lst(t), 
-                                                                     print_lst(100.*(exit/float(sum(exit)))))
+                                                                     print_lst(100.*(exit/float(sum(exit))))))
             
 def compute_network_times(exits, branch_times):
     total_times = []
@@ -334,7 +333,7 @@ def compute_network_times(exits, branch_times):
 def compute_branch_times(net, x_test, y_test, batchsize=1, num_samples=200):
     thresholds = [10.]
     branch_times = []
-    for i in xrange(len(net.models)):
+    for i in range(len(net.models)):
         net.thresholdExits = thresholds
         _, branch_time, _ = test(net, x_test[:num_samples], y_test[:num_samples],
                                  batchsize=batchsize, main=False)

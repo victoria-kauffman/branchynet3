@@ -8,8 +8,8 @@ import chainer.links as L
 from scipy.stats import entropy
 import types
 
-from links.links import *
-from functions import *
+from .links.links import *
+from .functions import *
 
 import time
 
@@ -193,8 +193,8 @@ class BranchyNet:
             if numkeep > 0:
                 xdata_keep = xdata[~idx]
                 tdata_keep = tdata[~idx]
-                remainingXVar = Variable(self.xp.array(xdata_keep,dtype=x.data.dtype),volatile=x.volatile)
-                remainingTVar = Variable(self.xp.array(tdata_keep,dtype=t.data.dtype),volatile=t.volatile)
+                remainingXVar = Variable(self.xp.array(xdata_keep,dtype=x.data.dtype))
+                remainingTVar = Variable(self.xp.array(tdata_keep,dtype=t.data.dtype))
             else:
                 remainingXVar = None
                 remainingTVar = None
@@ -202,8 +202,8 @@ class BranchyNet:
             if numexit > 0:
                 xdata_exit = xdata[idx]
                 tdata_exit = tdata[idx]                
-                exitXVar = Variable(self.xp.array(xdata_exit,dtype=x.data.dtype),volatile=x.volatile)
-                exitTVar = Variable(self.xp.array(tdata_exit,dtype=t.data.dtype),volatile=t.volatile)
+                exitXVar = Variable(self.xp.array(xdata_exit,dtype=x.data.dtype))
+                exitTVar = Variable(self.xp.array(tdata_exit,dtype=t.data.dtype))
                 
                 # if self.gpu:
                 #     exitH = model.test(exitXVar,None)
@@ -226,9 +226,9 @@ class BranchyNet:
         overall /= np.sum(numexits)
         
         if self.verbose:
-            print "numexits", numexits
-            print "accuracies", accuracies
-            print "overall accuracy", overall
+            print("numexits", numexits)
+            print("accuracies", accuracies)
+            print("overall accuracy", overall)
         
         return overall, accuracies, numexits, totaltime
     
@@ -262,7 +262,7 @@ class BranchyNet:
         
         totaltime = 0
         for i,model in enumerate(self.models):
-            if isinstance(remainingXVar,types.NoneType) or isinstance(remainingTVar,types.NoneType):
+            if isinstance(remainingXVar,type(None)) or isinstance(remainingTVar,type(None)):
                 break
             
             start_time = time.time()
@@ -314,8 +314,8 @@ class BranchyNet:
             if numkeep > 0:
                 xdata_keep = xdata[~idx]
                 tdata_keep = tdata[~idx]
-                remainingXVar = Variable(self.xp.array(xdata_keep,dtype=x.data.dtype),volatile=x.volatile)
-                remainingTVar = Variable(self.xp.array(tdata_keep,dtype=t.data.dtype),volatile=t.volatile)
+                remainingXVar = Variable(self.xp.array(xdata_keep,dtype=x.data.dtype))
+                remainingTVar = Variable(self.xp.array(tdata_keep,dtype=t.data.dtype))
             else:
                 remainingXVar = None
                 remainingTVar = None
@@ -323,8 +323,8 @@ class BranchyNet:
             if numexit > 0:
                 xdata_exit = xdata[idx]
                 tdata_exit = tdata[idx]                
-                exitXVar = Variable(self.xp.array(xdata_exit,dtype=x.data.dtype),volatile=x.volatile)
-                exitTVar = Variable(self.xp.array(tdata_exit,dtype=t.data.dtype),volatile=t.volatile)
+                exitXVar = Variable(self.xp.array(xdata_exit,dtype=x.data.dtype))
+                exitTVar = Variable(self.xp.array(tdata_exit,dtype=t.data.dtype))
                 
                 exitH = model.test(exitXVar,model.endi)
                 hs.append(exitH.data)
@@ -347,7 +347,7 @@ class BranchyNet:
             accuracydata = accuracy.data
         
         if self.verbose:
-            print "accuracies", accuracydata
+            print("accuracies", accuracydata)
             
         return accuracydata, totaltime
     
@@ -365,8 +365,8 @@ class BranchyNet:
             accuraciesdata = accuracy.data            
 
         if self.verbose:        
-            print "losses",lossesdata
-            print "accuracies",accuraciesdata
+            print("losses",lossesdata)
+            print("accuracies",accuraciesdata)
         
         return lossesdata,accuraciesdata
         
@@ -427,7 +427,7 @@ class BranchyNet:
 
             numsamples = x.data.shape[0]
             for i,model in enumerate(self.models[:-1]):
-                if isinstance(remainingXVar,types.NoneType) or isinstance(remainingTVar,types.NoneType):
+                if isinstance(remainingXVar,type(None)) or isinstance(remainingTVar,type(None)):
                     break
                 loss = model.train(remainingXVar,remainingTVar)
 
@@ -462,7 +462,6 @@ class BranchyNet:
         return entropies
             
     def train(self,x,t=None):
-        
         # SCATTER: copy params
         for i,link in enumerate(self.main):
             for model in self.models:
@@ -489,7 +488,7 @@ class BranchyNet:
         nummodels = len(self.models)
         numsamples = x.data.shape[0]
         for i,model in enumerate(self.models):
-            if isinstance(remainingXVar,types.NoneType) or isinstance(remainingTVar,types.NoneType):
+            if isinstance(remainingXVar,type(None)) or isinstance(remainingTVar,type(None)):
                 break
             loss = model.train(remainingXVar,remainingTVar)
             losses.append(loss)
@@ -546,8 +545,8 @@ class BranchyNet:
                 tdata = remainingTVar.data
             
             if numkeep > 0:
-                remainingXVar = Variable(self.xp.array(xdata[~idx]),volatile=x.volatile)
-                remainingTVar = Variable(self.xp.array(tdata[~idx]),volatile=t.volatile)
+                remainingXVar = Variable(self.xp.array(xdata[~idx]))
+                remainingTVar = Variable(self.xp.array(tdata[~idx]))
             else:
                 remainingXVar = None
                 remainingTVar = None
@@ -605,19 +604,19 @@ class BranchyNet:
             accuraciesdata = [accuracy.data for accuracy in accuracies]
         
         if self.verbose:
-            print "numexits",numexits
-            print "losses",lossesdata
-            print "accuracies",accuraciesdata
+            print("numexits",numexits)
+            print("losses",lossesdata)
+            print("accuracies",accuraciesdata)
             
         return lossesdata,accuraciesdata
     
     def print_models(self):
         for model in self.models:
-            print "----", model.starti, model.endi
+            print("----", model.starti, model.endi)
             for link in model:
-                print link
-        print "----", self.main.starti, model.endi
+                print(link)
+        print("----", self.main.starti, model.endi)
         for link in self.main:
-            print link
-        print "----"
+            print(link)
+        print("----")
         

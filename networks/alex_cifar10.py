@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 from branchynet.links.links import *
 from branchynet.net import BranchyNet
@@ -34,17 +34,19 @@ def gen_2b(branch1, branch2):
         FL(F.max_pooling_2d, 3, 2),
         L.Linear(1024, 256),
         FL(F.relu),
-        SL(FL(F.dropout,0.5,train=True)),
+        SL(FL(F.dropout,0.5)),
         L.Linear(256, 128),
         FL(F.relu),
-        SL(FL(F.dropout,0.5,train=True)),
+        SL(FL(F.dropout,0.5)),
         Branch([L.Linear(128, 10)])
     ]
     
     return network
 
 def get_network(percentTrainKeeps=1):
-    network = gen_2b(branch1=norm() + conv(64) + conv(32) + cap(512),
-                              branch2=norm() + conv(96) + cap(128))
+    network = gen_2b(
+        branch1=norm() + conv(64) + conv(32) + cap(512),
+            branch2=norm() + conv(96) + cap(128))
+
     net = BranchyNet(network, percentTrainKeeps=percentTrainKeeps)
     return net

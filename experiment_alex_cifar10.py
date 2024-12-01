@@ -12,9 +12,14 @@ from chainer import cuda
 
 from networks import alex_cifar10
 
+print("Get network")
 branchyNet = alex_cifar10.get_network()
 if cuda.available:
+    print("to gpu")
     branchyNet.to_gpu()
+
+print("BranchyNet Training")
+
 branchyNet.training()
 
 
@@ -24,6 +29,7 @@ branchyNet.training()
 
 from datasets import pcifar10
 
+print("Import data")
 x_train,y_train,x_test,y_test = pcifar10.get_data()
 
 
@@ -39,19 +45,29 @@ TRAIN_NUM_EPOCHS = 50
 # Train Main Network
 
 # In[ ]:
+print("Main train")
 
 main_loss, main_acc, main_time = utils.train(branchyNet, x_train, y_train, main=True, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
 
+print("Main loss: ", main_loss)
+print("Main acc: ", main_acc)
+print("Main time: ", main_time)
 
 # Train BranchyNet
 
 # In[ ]:
+print("Branch train")
 
 TRAIN_NUM_EPOCHS = 100
 branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
 
+print("Branch loss: ", branch_loss)
+print("Branch acc: ", branch_acc)
+print("Branch time: ", branch_time)
+
+print("BranchyNet.testing")
 #set network to inference mode
 branchyNet.testing()
 
@@ -59,6 +75,7 @@ branchyNet.testing()
 # Visualizing Network Training
 
 # In[ ]:
+print("Plot layers")
 
 visualize.plot_layers(main_loss, xlabel='Epochs', ylabel='Training Loss')
 visualize.plot_layers(main_acc, xlabel='Epochs', ylabel='Training Accuracy')
@@ -66,8 +83,8 @@ visualize.plot_layers(main_acc, xlabel='Epochs', ylabel='Training Accuracy')
 
 # In[ ]:
 
-visualize.plot_layers(zip(*branch_loss), xlabel='Epochs', ylabel='Training Loss')
-visualize.plot_layers(zip(*branch_acc), xlabel='Epochs', ylabel='Training Accuracy')
+visualize.plot_layers(list(zip(*branch_loss)), xlabel='Epochs', ylabel='Training Loss')
+visualize.plot_layers(list(zip(*branch_acc)), xlabel='Epochs', ylabel='Training Accuracy')
 
 
 # Run test suite and visualize
@@ -79,10 +96,14 @@ branchyNet.testing()
 branchyNet.verbose = False
 if cuda.available:
     branchyNet.to_gpu()
+print("Utils test")
+
 g_baseacc, g_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
 g_basediff = (g_basediff / float(len(y_test))) * 1000.
 
-#branchyNet.to_cpu()
+print("Utils test 2")
+
+branchyNet.to_cpu()
 c_baseacc, c_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
 c_basediff = (c_basediff / float(len(y_test))) * 1000.
 
@@ -96,6 +117,7 @@ thresholds = [0.0001, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 0.75, 1., 5., 10.]
 # In[ ]:
 
 #GPU
+print("Screen branchy")
 if cuda.available:
     branchyNet.to_gpu()
 g_ts, g_accs, g_diffs, g_exits = utils.screen_branchy(branchyNet, x_test, y_test, thresholds,
@@ -115,6 +137,7 @@ visualize.plot_line_tradeoff(g_accs, g_diffs, g_ts, g_exits, g_baseacc, g_basedi
 
 
 # In[ ]:
+print("Screen branchy 2")
 
 #CPU
 branchyNet.to_cpu()
@@ -143,7 +166,7 @@ utils.branchy_table_results(c_baseacc, c_basediff, g_basediff, c_accs, c_diffs, 
 # Save model/data
 
 # In[ ]:
-
+print("Saving data")
 import dill
 branchyNet.to_cpu()
 with open("_models/alexnet_cifar10.bn", "w") as f:
@@ -152,4 +175,3 @@ with open("_models/alexnet_cifar10_gpu_results.pkl", "w") as f:
     dill.dump({'accs': g_accs, 'rt': g_diffs, 'exits': g_exits, 'ts': g_ts, 'baseacc': g_baseacc, 'basediff': g_basediff}, f)
 with open("_models/alexnet_cifar10_cpu_results.pkl", "w") as f:
     dill.dump({'accs': c_accs, 'rt': c_diffs, 'exits': c_exits, 'ts': c_ts, 'baseacc': c_baseacc, 'basediff': c_basediff}, f)
-
