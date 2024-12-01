@@ -44,8 +44,9 @@ def gen_2b(branch1, branch2):
     return network
 
 def get_network(percentTrainKeeps=1):
-    network = gen_2b(branch1=norm() + conv(64) + conv(32) + cap(512),
-                              branch2=norm() + conv(96) + cap(128))
+    network = gen_2b(
+        branch1=norm() + conv(64) + conv(32) + cap(512),
+            branch2=norm() + conv(96) + cap(128))
 
     net = BranchyNet(network, percentTrainKeeps=percentTrainKeeps)
     return net
