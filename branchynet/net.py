@@ -381,7 +381,6 @@ class BranchyNet:
         return self.test_model(self.main,x,t)
     
     def train_main(self,x,t=None):
-        print("Train main")
         return self.train_model(self.main,x,t)
 
     def train_branch(self,i,x,t=None):
