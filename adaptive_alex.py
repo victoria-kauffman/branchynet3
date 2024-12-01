@@ -18,7 +18,8 @@ print("Get network")
 branch_locs = [int(i) for i in branch_locs]
 print("Branch locs: ", branch_locs)
 
-branchyNet = lenet_mnist.get_network(branch_locs=branch_locs)
+branchyNet = alex_cifar10.get_network(branch_locs=branch_locs)
+print("Got them -")
 # if cuda.available:
 #     print("to gpu")
 #     branchyNet.to_gpu()
@@ -29,13 +30,12 @@ branchyNet.training()
 
 # Import Data
 
-# In[4]:
+# In[ ]:
 
-print("Get data")
+from datasets import pcifar10
 
-from datasets import mnist
-x_train, y_train, x_test, y_test = mnist.get_data()
-
+print("Import data")
+x_train,y_train,x_test,y_test = pcifar10.get_data()
 
 # Settings
 
@@ -43,8 +43,7 @@ x_train, y_train, x_test, y_test = mnist.get_data()
 
 TRAIN_BATCHSIZE = 512
 TEST_BATCHSIZE = 1
-TRAIN_NUM_EPOCHS = 50
-
+TRAIN_NUM_EPOCHS = 2
 
 
 # Train Main Network
@@ -62,7 +61,7 @@ print("Main time: ", main_time)
 # In[7]:
 print("Training branchynet network")
 
-# TRAIN_NUM_EPOCHS = 100
+TRAIN_NUM_EPOCHS = 100
 branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
 print("Branch loss: ", branch_loss)
@@ -80,20 +79,20 @@ print("BranchyNet.testing()")
 branchyNet.testing()
 
 
-# # Visualizing Network Training
+# Visualizing Network Training
 
 
-# # In[8]:
-# print("Attempt to plot")
+# In[8]:
+print("Attempt to plot")
 
-# visualize.plot_layers(main_loss, xlabel='Epochs', ylabel='Training Loss')
-# visualize.plot_layers(main_acc, xlabel='Epochs', ylabel='Training Accuracy')
+visualize.plot_layers(main_loss, xlabel='Epochs', ylabel='Training Loss')
+visualize.plot_layers(main_acc, xlabel='Epochs', ylabel='Training Accuracy')
 
 
-# # In[9]:
+# In[9]:
 
-# visualize.plot_layers(list(zip(*branch_loss)), xlabel='Epochs', ylabel='Training Loss')
-# visualize.plot_layers(list(zip(*branch_acc)), xlabel='Epochs', ylabel='Training Accuracy')
+visualize.plot_layers(list(zip(*branch_loss)), xlabel='Epochs', ylabel='Training Loss')
+visualize.plot_layers(list(zip(*branch_acc)), xlabel='Epochs', ylabel='Training Accuracy')
 
 
 # Run test suite and visualize
@@ -115,7 +114,7 @@ g_basediff = (g_basediff / float(len(y_test))) * 1000.
 print("g_baseacc: ", g_baseacc)
 print("g_basediff: ", g_basediff)
 
-# print("utils test 2")
+print("utils test 2")
 
 # #branchyNet.to_cpu()
 # c_baseacc, c_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)

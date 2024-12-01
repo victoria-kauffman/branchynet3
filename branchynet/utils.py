@@ -251,6 +251,7 @@ def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
             totaltime += diff
             
             avglosses.append(losses)
+            # print(accuracies)
             avgaccuracies.append(accuracies)
             # avgnumsamples.append(numsamples)
             # avgexitsamples.append(exitsamples)

@@ -8,4 +8,4 @@
 #SBATCH -e errors_alex/run_alex_%j.err
 
 conda activate chainer_env
-python adaptive_lenet_mnist.py
+python adaptive_lenet_mnist.py 3
