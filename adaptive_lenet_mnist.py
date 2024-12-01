@@ -6,6 +6,7 @@ from branchynet import utils, visualize
 from chainer import cuda
 import sys
 import random
+import dill
 
 # Define Network
 
@@ -26,6 +27,7 @@ print("Training")
 
 branchyNet.training()
 rand_it = str(random.randint(1, 9999999))
+print("ID ", rand_it)
 
 # Import Data
 
@@ -35,7 +37,12 @@ print("Get data")
 
 from datasets import mnist
 x_train, y_train, x_test, y_test = mnist.get_data()
-
+# if cuda.available:
+#     print("to gpu")
+#     x_train = cuda.to_gpu(x_train)
+#     y_train = cuda.to_gpu(y_train)
+#     x_test = cuda.to_gpu(x_test)
+#     y_test = cuda.to_gpu(y_test)
 
 # Settings
 
@@ -44,7 +51,7 @@ x_train, y_train, x_test, y_test = mnist.get_data()
 TRAIN_BATCHSIZE = 512
 TEST_BATCHSIZE = 1
 TRAIN_NUM_EPOCHS = 50
-TRAIN_NUM_EPOCHS = 2
+# TRAIN_NUM_EPOCHS = 2
 
 
 
@@ -68,14 +75,13 @@ with open("_models/main_lenet_mnist" + rand_it + ".bn", "wb") as f:
 print("Training branchynet network")
 
 TRAIN_NUM_EPOCHS = 100
-TRAIN_NUM_EPOCHS = 4
+# TRAIN_NUM_EPOCHS = 4
 branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
 print("Branch loss: ", branch_loss)
 print("Branch acc: ", branch_acc)
 print("Branch time: ", branch_time)
 
-import dill
 branchyNet.to_cpu()
 with open("_models/lenet_mnist" + rand_it + ".bn", "wb") as f:
     dill.dump(branchyNet, f)
@@ -142,17 +148,17 @@ print("screen branchy")
 #GPU
 # if cuda.available:
 #     branchyNet.to_gpu()
-# g_ts, g_accs, g_diffs, g_exits = utils.screen_branchy(branchyNet, x_test, y_test, thresholds,
+g_ts, g_accs, g_diffs, g_exits = utils.screen_branchy(branchyNet, x_test, y_test, thresholds,
+                                                    batchsize=TEST_BATCHSIZE, verbose=True)
+# g_ts, g_accs, g_diffs, g_exits = utils.screen_leaky(leakyNet, x_test, y_test, thresholds, inc_amt=-0.1,
 #                                                     batchsize=TEST_BATCHSIZE, verbose=True)
-# # g_ts, g_accs, g_diffs, g_exits = utils.screen_leaky(leakyNet, x_test, y_test, thresholds, inc_amt=-0.1,
-# #                                                     batchsize=TEST_BATCHSIZE, verbose=True)
 
-# print("g_ts: ", g_ts)
-# print("g_accs: ", g_accs)
-# print("g_diffs: ", g_diffs)
-# print("g_exits: ", g_exits)
-# #convert to ms
-# g_diffs *= 1000.
+print("g_ts: ", g_ts)
+print("g_accs: ", g_accs)
+print("g_diffs: ", g_diffs)
+print("g_exits: ", g_exits)
+#convert to ms
+g_diffs *= 1000.
 
 # print("plot shit")
 

@@ -1,0 +1,24 @@
+no change     /n/sw/Mambaforge-22.11.1-4/condabin/conda
+no change     /n/sw/Mambaforge-22.11.1-4/bin/conda
+no change     /n/sw/Mambaforge-22.11.1-4/bin/conda-env
+no change     /n/sw/Mambaforge-22.11.1-4/bin/activate
+no change     /n/sw/Mambaforge-22.11.1-4/bin/deactivate
+no change     /n/sw/Mambaforge-22.11.1-4/etc/profile.d/conda.sh
+no change     /n/sw/Mambaforge-22.11.1-4/etc/fish/conf.d/conda.fish
+no change     /n/sw/Mambaforge-22.11.1-4/shell/condabin/Conda.psm1
+no change     /n/sw/Mambaforge-22.11.1-4/shell/condabin/conda-hook.ps1
+no change     /n/sw/Mambaforge-22.11.1-4/lib/python3.10/site-packages/xontrib/conda.xsh
+no change     /n/sw/Mambaforge-22.11.1-4/etc/profile.d/conda.csh
+no change     /n/home01/tkauffman/.bashrc
+No action taken.
+Added mamba to /n/home01/tkauffman/.bashrc
+
+==> For changes to take effect, close and re-open your current shell. <==
+
+Get network
+Branch locs:  [1]
+Got them
+to gpu
+Training
+Get data
+Training main network

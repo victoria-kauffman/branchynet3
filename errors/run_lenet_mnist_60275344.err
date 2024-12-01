@@ -1,0 +1,61 @@
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+Traceback (most recent call last):
+  File "adaptive_lenet_mnist.py", line 54, in <module>
+    main_loss, main_acc, main_time = utils.train(branchyNet, x_train, y_train, main=True, batchsize=TRAIN_BATCHSIZE,
+  File "/n/home01/tkauffman/branchynet3/branchynet/utils.py", line 245, in train
+    losses,accuracies = branchyNet.train_main(x,t)
+  File "/n/home01/tkauffman/branchynet3/branchynet/net.py", line 383, in train_main
+    return self.train_model(self.main,x,t)
+  File "/n/home01/tkauffman/branchynet3/branchynet/net.py", line 356, in train_model
+    loss = self.main.train(x,t)
+  File "/n/home01/tkauffman/branchynet3/branchynet/links/links.py", line 131, in train
+    h = self(x,False,starti,endi)
+  File "/n/home01/tkauffman/branchynet3/branchynet/links/links.py", line 125, in __call__
+    h = link(h)
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/link.py", line 287, in __call__
+    out = forward(*args, **kwargs)
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/links/connection/linear.py", line 183, in forward
+    return linear.linear(x, self.W, self.b, n_batch_axes=n_batch_axes)
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/functions/connection/linear.py", line 308, in linear
+    y, = LinearFunction().apply(args)
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/function_node.py", line 334, in apply
+    outputs = self.forward(in_data)
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/functions/connection/linear.py", line 118, in forward
+    self.static_add_bias(inputs=[b], outputs=[y])
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/graph_optimizations/static_graph_utilities.py", line 186, in wrapped_func
+    ret = func(*args, **kwargs)
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/chainer/functions/connection/linear.py", line 64, in static_add_bias
+    y += bias
+  File "cupy/core/core.pyx", line 1058, in cupy.core.core.ndarray.__iadd__
+  File "cupy/core/_kernel.pyx", line 951, in cupy.core._kernel.ufunc.__call__
+  File "cupy/core/_kernel.pyx", line 974, in cupy.core._kernel.ufunc._get_ufunc_kernel
+  File "cupy/core/_kernel.pyx", line 714, in cupy.core._kernel._get_ufunc_kernel
+  File "cupy/core/_kernel.pyx", line 61, in cupy.core._kernel._get_simple_elementwise_kernel
+  File "cupy/core/carray.pxi", line 196, in cupy.core.core.compile_with_cache
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/cupy/cuda/compiler.py", line 297, in compile_with_cache
+    return _compile_with_cache_cuda(source, options, arch, cache_dir,
+  File "/n/home01/tkauffman/.conda/envs/chainer_env/lib/python3.8/site-packages/cupy/cuda/compiler.py", line 346, in _compile_with_cache_cuda
+    mod.load(cubin)
+  File "cupy/cuda/function.pyx", line 197, in cupy.cuda.function.Module.load
+  File "cupy/cuda/function.pyx", line 199, in cupy.cuda.function.Module.load
+  File "cupy/cuda/driver.pyx", line 240, in cupy.cuda.driver.moduleLoadData
+  File "cupy/cuda/driver.pyx", line 118, in cupy.cuda.driver.check_status
+cupy.cuda.driver.CUDADriverError: CUDA_ERROR_INVALID_SOURCE: device kernel image is invalid

@@ -329,6 +329,7 @@ class BranchyNet:
                 exitH = model.test(exitXVar,model.endi)
                 hs.append(exitH.data)
         
+        print("Num exits: ", numexits)
         self.num_exits = numexits
         self.runtime = totaltime
         return np.vstack(hs)
