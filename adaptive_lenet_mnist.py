@@ -5,7 +5,7 @@ import chainer.links as L
 from branchynet import utils, visualize
 from chainer import cuda
 import sys
-
+import random
 
 # Define Network
 
@@ -25,7 +25,7 @@ branchyNet = lenet_mnist.get_network(branch_locs=branch_locs)
 print("Training")
 
 branchyNet.training()
-
+rand_it = str(random.randint(1, 9999999))
 
 # Import Data
 
@@ -44,6 +44,7 @@ x_train, y_train, x_test, y_test = mnist.get_data()
 TRAIN_BATCHSIZE = 512
 TEST_BATCHSIZE = 1
 TRAIN_NUM_EPOCHS = 50
+TRAIN_NUM_EPOCHS = 2
 
 
 
@@ -57,12 +58,17 @@ main_loss, main_acc, main_time = utils.train(branchyNet, x_train, y_train, main=
 print("Main loss: ", main_loss)
 print("Main acc: ", main_acc)
 print("Main time: ", main_time)
+
+with open("_models/main_lenet_mnist" + rand_it + ".bn", "wb") as f:
+    dill.dump(branchyNet, f)
+
 # Train BranchyNet
 
 # In[7]:
 print("Training branchynet network")
 
-# TRAIN_NUM_EPOCHS = 100
+TRAIN_NUM_EPOCHS = 100
+TRAIN_NUM_EPOCHS = 4
 branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
 print("Branch loss: ", branch_loss)
@@ -71,7 +77,7 @@ print("Branch time: ", branch_time)
 
 import dill
 branchyNet.to_cpu()
-with open("_models/lenet_mnist.bn", "wb") as f:
+with open("_models/lenet_mnist" + rand_it + ".bn", "wb") as f:
     dill.dump(branchyNet, f)
 
 #set network to inference mode

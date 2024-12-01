@@ -206,6 +206,7 @@ def train_augment(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=F
         avg_loss = sum_loss / num
         avg_accuracy = sum_accuracy / num
         plotlosses.append(avg_loss)
+        print(epoch, ": ", avg_accuracy)
         plotaccuracies.append(avg_accuracy)
         
     return plotlosses,plotaccuracies,sum_time
@@ -265,6 +266,8 @@ def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
         plotaccuracies.append(avgaccuracy)
         # plotnumsamples.append(avgnumsample)
         # plotexitsamples.append(avgexitsample)
+        print(epoch, ": ", avgaccuracy)
+
     return plotlosses,plotaccuracies,totaltime
 
 def generate_thresholds(base_ts, num_layers):
