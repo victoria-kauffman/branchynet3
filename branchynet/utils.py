@@ -211,6 +211,7 @@ def train_augment(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=F
     return plotlosses,plotaccuracies,sum_time
 
 def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
+    print("training main: ", main)
     datasize = x_train.shape[0]
     
     plotepochs = list(range(num_epoch))

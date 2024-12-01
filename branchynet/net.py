@@ -352,8 +352,12 @@ class BranchyNet:
         return accuracydata, totaltime
     
     def train_model(self,model,x,t=None):
+        print("train model")
         self.main.zerograds()
+
+        print("Enter train?")
         loss = self.main.train(x,t)
+        print("Exit train???")
         accuracy = self.main.accuracy
         loss.backward()
         self.optimizer.update()
@@ -364,7 +368,7 @@ class BranchyNet:
             lossesdata = loss.data
             accuraciesdata = accuracy.data            
 
-        if self.verbose:        
+        if self.verbose or True:        
             print("losses",lossesdata)
             print("accuracies",accuraciesdata)
         
@@ -380,6 +384,7 @@ class BranchyNet:
         return self.test_model(self.main,x,t)
     
     def train_main(self,x,t=None):
+        print("Train main")
         return self.train_model(self.main,x,t)
 
     def train_branch(self,i,x,t=None):
@@ -462,6 +467,7 @@ class BranchyNet:
         return entropies
             
     def train(self,x,t=None):
+        print("Main . train")
         # SCATTER: copy params
         for i,link in enumerate(self.main):
             for model in self.models:
@@ -476,6 +482,7 @@ class BranchyNet:
         
         
         # FORWARD
+        print("HELP")
         if self.forwardMain is not None:
             mainLoss = self.main.train(x,t)
         # FORWARD AS TEST TO GET ENTROPY AND FILTER        

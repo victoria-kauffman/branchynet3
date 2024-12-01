@@ -45,6 +45,8 @@ x_train, y_train, x_test, y_test = mnist.get_data()
 TRAIN_BATCHSIZE = 512
 TEST_BATCHSIZE = 1
 TRAIN_NUM_EPOCHS = 50
+TRAIN_NUM_EPOCHS = 15
+
 
 
 # Train Main Network
@@ -62,58 +64,58 @@ print("Main time: ", main_time)
 # In[7]:
 print("Training branchynet network")
 
-TRAIN_NUM_EPOCHS = 100
-branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
-                                             num_epoch=TRAIN_NUM_EPOCHS)
-print("Branch loss: ", branch_loss)
-print("Branch acc: ", branch_acc)
-print("Branch time: ", branch_time)
+# TRAIN_NUM_EPOCHS = 100
+# branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
+#                                              num_epoch=TRAIN_NUM_EPOCHS)
+# print("Branch loss: ", branch_loss)
+# print("Branch acc: ", branch_acc)
+# print("Branch time: ", branch_time)
 
-import dill
-branchyNet.to_cpu()
-with open("_models/lenet_mnist.bn", "wb") as f:
-    dill.dump(branchyNet, f)
+# import dill
+# branchyNet.to_cpu()
+# with open("_models/lenet_mnist.bn", "wb") as f:
+#     dill.dump(branchyNet, f)
 
-#set network to inference mode
-print("BranchyNet.testing()")
+# #set network to inference mode
+# print("BranchyNet.testing()")
 
-branchyNet.testing()
-
-
-# Visualizing Network Training
+# branchyNet.testing()
 
 
-# In[8]:
-print("Attempt to plot")
-
-visualize.plot_layers(main_loss, xlabel='Epochs', ylabel='Training Loss')
-visualize.plot_layers(main_acc, xlabel='Epochs', ylabel='Training Accuracy')
+# # Visualizing Network Training
 
 
-# In[9]:
+# # In[8]:
+# print("Attempt to plot")
 
-visualize.plot_layers(list(zip(*branch_loss)), xlabel='Epochs', ylabel='Training Loss')
-visualize.plot_layers(list(zip(*branch_acc)), xlabel='Epochs', ylabel='Training Accuracy')
+# visualize.plot_layers(main_loss, xlabel='Epochs', ylabel='Training Loss')
+# visualize.plot_layers(main_acc, xlabel='Epochs', ylabel='Training Accuracy')
 
 
-# Run test suite and visualize
+# # In[9]:
 
-# In[11]:
+# visualize.plot_layers(list(zip(*branch_loss)), xlabel='Epochs', ylabel='Training Loss')
+# visualize.plot_layers(list(zip(*branch_acc)), xlabel='Epochs', ylabel='Training Accuracy')
 
-print("test suite")
-#set network to inference mode
-branchyNet.testing()
-branchyNet.verbose = False
-if cuda.available:
-    branchyNet.to_gpu()
 
-print("utils test")
+# # Run test suite and visualize
 
-g_baseacc, g_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
-g_basediff = (g_basediff / float(len(y_test))) * 1000.
+# # In[11]:
 
-print("g_baseacc: ", g_baseacc)
-print("g_basediff: ", g_basediff)
+# print("test suite")
+# #set network to inference mode
+# branchyNet.testing()
+# branchyNet.verbose = False
+# if cuda.available:
+#     branchyNet.to_gpu()
+
+# print("utils test")
+
+# g_baseacc, g_basediff, _, _ = utils.test(branchyNet,x_test,y_test,main=True,batchsize=TEST_BATCHSIZE)
+# g_basediff = (g_basediff / float(len(y_test))) * 1000.
+
+# print("g_baseacc: ", g_baseacc)
+# print("g_basediff: ", g_basediff)
 
 print("utils test 2")
 
