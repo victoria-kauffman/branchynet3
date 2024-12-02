@@ -222,6 +222,7 @@ def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
     totaltime = 0
     
     for epoch in plotepochs:
+        print("Epoch: ", epoch)
         indexes = np.random.permutation(datasize)
         sum_loss = 0
         num = 0
@@ -257,6 +258,7 @@ def train(branchyNet,x_train,y_train,batchsize=10000,num_epoch=20,main=False):
 
         avgloss = np.mean(np.array(avglosses),0)
         avgaccuracy = np.mean(np.array(avgaccuracies),0)
+        print(epoch, ": ", avgaccuracy)
         # avgnumsample = np.mean(np.array(avgnumsamples),0)
         # avgexitsample = np.mean(np.array(avgexitsamples),0)
 

@@ -5,8 +5,10 @@ from branchynet.net import BranchyNet
 
 import chainer.links as L
 import chainer.functions as F
+from shrub import add_branches
 
-def get_network(percentTrainKeeps=1):
+
+def get_network(percentTrainKeeps=1, branch_locs=[]):
     network = [
         L.Convolution2D(1, 5, 5,stride=1, pad=3),
         Branch([FL(F.max_pooling_2d, 2, 2), FL(F.ReLU()), L.Convolution2D(5, 10,  3, pad=1, stride=1),
@@ -22,5 +24,6 @@ def get_network(percentTrainKeeps=1):
         L.Linear(720, 84),
         Branch([L.Linear(84, 10)])
     ]
+    add_branches(network, branch_locs)
     net = BranchyNet(network, percentTrainKeeps=percentTrainKeeps)
     return net

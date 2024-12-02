@@ -8,11 +8,15 @@ from scipy import linalg
 dirname = os.path.dirname(os.path.realpath(__file__))
 
 def get_data(redir=''):
-    datasets = np.load(redir + 'datasets/data/pcifar10/data.npz')
-    train_data = datasets['train_x']
-    train_labels = datasets['train_y']
-    test_data = datasets['test_x']
-    test_labels = datasets['test_y']
+    # datasets = np.load(redir + 'datasets/data/pcifar10/data.npz')
+    # train_data = datasets['train_x']
+    # train_labels = datasets['train_y']
+    # test_data = datasets['test_x']
+    # test_labels = datasets['test_y']
+    train_data = np.load('cifar10/train_data.npy')
+    train_labels = np.load('cifar10/train_labels.npy')
+    test_data = np.load('cifar10/test_data.npy')
+    test_labels = np.load('cifar10/test_labels.npy')
     return train_data, train_labels, test_data, test_labels
 
 def get_data_dev(numclasses=2):
