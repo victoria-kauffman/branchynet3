@@ -27,7 +27,8 @@ def test_suite_B(branchyNet,x_test,y_test,batchsize=10000,ps=np.linspace(0.1,2.0
         accs.append(acc)
         diffs.append(diff)
         num_exits.append(num_exit)
-        
+        print(p, ": accs - ", acc, " ; diffs - ", diffs, " ; num exit - ", num_exit)
+
     return ps, np.array(accs), np.array(diffs)/float(len(y_test)), num_exits
     
 def test_augment(branchyNet,x_test,y_test=None,batchsize=10000,main=False):
@@ -305,7 +306,7 @@ def screen_branchy(branchyNet, x_test, y_test, base_ts, batchsize=1, enumerate_t
     else:
         ts = base_ts
     
-    ts, accs, diffs, exits = test_suite_B(branchyNet, x_test, y_test, batchsize=batchsize, ps=ts)
+    ts, accs, diffs, exits = test_suite_B(branchyNet, x_test, y_test, batchsize=batchsize)
     
     return ts, accs, diffs, exits
     

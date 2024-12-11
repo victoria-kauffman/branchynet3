@@ -47,4 +47,3 @@ def get_data_dev(numclasses=2):
     test_labels = test_labels[idx]
     
     return train_data, train_labels, test_data, test_labels
-

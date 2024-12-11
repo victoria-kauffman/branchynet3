@@ -45,25 +45,25 @@ x_train,y_train,x_test,y_test = pcifar10.get_data()
 
 TRAIN_BATCHSIZE = 512
 TEST_BATCHSIZE = 1
-TRAIN_NUM_EPOCHS = 50
+TRAIN_NUM_EPOCHS = 10
 
 
 # Train Main Network
 
 # In[6]:
-print("Training main network")
-main_loss, main_acc, main_time = utils.train(branchyNet, x_train, y_train, main=True, batchsize=TRAIN_BATCHSIZE,
-                                             num_epoch=TRAIN_NUM_EPOCHS)
+# print("Training main network")
+# main_loss, main_acc, main_time = utils.train(branchyNet, x_train, y_train, main=True, batchsize=TRAIN_BATCHSIZE,
+#                                              num_epoch=TRAIN_NUM_EPOCHS)
 
-print("Main loss: ", main_loss)
-print("Main acc: ", main_acc)
-print("Main time: ", main_time)
+# print("Main loss: ", main_loss)
+# print("Main acc: ", main_acc)
+# print("Main time: ", main_time)
 # Train BranchyNet
 
 # In[7]:
 print("Training branchynet network")
 
-TRAIN_NUM_EPOCHS = 100
+TRAIN_NUM_EPOCHS = 30
 # TRAIN_NUM_EPOCHS = 2
 branch_loss, branch_acc, branch_time = utils.train(branchyNet, x_train, y_train, batchsize=TRAIN_BATCHSIZE,
                                              num_epoch=TRAIN_NUM_EPOCHS)
